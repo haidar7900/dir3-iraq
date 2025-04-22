@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #0d0d0d;
+  color: #fff;
+  display: flex;
+}
+
+aside {
+  width: 230px;
+  background-color: #111;
+  height: 100vh;
+  padding-top: 20px;
+  box-shadow: 2px 0 10px rgba(255, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+aside img {
+  width: 100px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+aside button {
+  background: none;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  width: 100%;
+  text-align: right;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+aside button:hover, aside button.active {
+  background-color: #ff4444;
+}
+
+main {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.section {
+  display: none;
+  animation: fade 0.3s ease-in-out;
+}
+
+.section.active {
+  display: block;
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.footer {
+  margin-top: 50px;
+  font-size: 14px;
+  text-align: center;
+  color: #aaa;
+}
+
+input[type="text"], input[type="url"] {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: none;
+}
+
+button.action {
+  padding: 10px 20px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.box {
+  background-color: #1c1c1c;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 10px auto;
+  max-width: 700px;
+  text-align: right;
+}
+
+.meter {
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 20px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(to right, green, yellow, red);
+  width: 0%;
+  transition: width 1s ease-in-out;
+}
+
+.telegram-link {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  color: #29b6f6;
+  text-decoration: underline;
+}
