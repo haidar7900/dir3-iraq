@@ -3,7 +3,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>درع العراق - منصة الحماية الإلكترونية</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       background-color: #0d0d0d;
@@ -19,16 +18,38 @@
       from { background-position: 0 0; }
       to { background-position: 100px 100px; }
     }
+    .sidebar {
+      width: 230px;
+      background-color: #111;
+      height: 100vh;
+      padding-top: 20px;
+      box-shadow: 2px 0 10px rgba(255, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      width: 100%;
+      text-align: right;
+      font-size: 16px;
+      cursor: pointer;
       transition: all 0.3s ease;
     }
     .sidebar button:hover {
       transform: scale(1.05);
       box-shadow: 0 0 10px #ff4444;
     }
+    main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
     .section {
       display: none;
-      padding: 30px;
       animation: fadeIn 0.7s ease;
     }
     .section.active {
@@ -52,12 +73,24 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    input, button {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      width: 90%;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 13px;
+      color: #999;
+    }
   </style>
   <script defer>
     function showSection(id) {
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('active'));
     }
     function analyzeUrl() {
       const input = document.getElementById('scanUrl').value;
@@ -68,7 +101,7 @@
       result.innerText = '';
       setTimeout(() => {
         loader.style.display = 'none';
-        result.innerText = `تم تحليل الرابط: ${input}\n- HTTPS: ${input.startsWith('https') ? 'نعم' : 'لا'}`;
+        result.innerText = `تم تحليل الرابط بنجاح:\n- يبدأ بـ HTTPS: ${input.startsWith('https') ? 'نعم' : 'لا'}\n- الطول: ${input.length} حرف`;
       }, 2000);
     }
     function generatePassword() {
@@ -80,16 +113,16 @@
     function askAI() {
       const q = document.getElementById('aiInput').value.toLowerCase();
       const a = document.getElementById('aiAnswer');
-      if (q.includes('xss')) a.innerText = 'XSS: ثغرة تسمح بحقن سكريبتات داخل الموقع.';
-      else if (q.includes('sql')) a.innerText = 'SQLi: تسمح للمهاجم بتنفيذ أوامر SQL عبر المدخلات.';
-      else a.innerText = 'يرجى توضيح السؤال أكثر.';
+      if (q.includes('xss')) a.innerText = 'XSS: ثغرة تمكن من حقن سكريبت في موقع الويب. المصدر: OWASP';
+      else if (q.includes('sql')) a.innerText = 'SQLi: إدخال أوامر SQL ضارة في قاعدة البيانات. المصدر: OWASP';
+      else a.innerText = 'يرجى إعادة صياغة السؤال أو توضيحه أكثر.';
     }
     window.onload = () => showSection('home');
   </script>
 </head>
 <body>
   <aside class="sidebar">
-    <img src="icon128.png" alt="شعار درع العراق" class="logo" />
+    <img src="icon128.png" alt="شعار درع العراق" width="100" />
     <button onclick="showSection('home')">الرئيسية</button>
     <button onclick="showSection('scan')">فحص الموقع</button>
     <button onclick="showSection('tools')">أدواتي</button>
@@ -104,34 +137,34 @@
     </section>
     <section id="scan" class="section">
       <h2>فحص رابط</h2>
-      <input type="url" id="scanUrl" placeholder="أدخل الرابط هنا...">
-      <button onclick="analyzeUrl()">فحص</button>
+      <input type="url" id="scanUrl" placeholder="https://example.com">
+      <button onclick="analyzeUrl()">فحص الآن</button>
       <div id="loader" class="loader"></div>
-      <div id="scanResult"></div>
+      <pre id="scanResult"></pre>
     </section>
     <section id="tools" class="section">
       <h2>أدواتي</h2>
-      <button onclick="generatePassword()">توليد كلمة مرور</button>
+      <button onclick="generatePassword()">توليد كلمة مرور قوية</button>
       <div id="passwordResult"></div>
     </section>
     <section id="vulns" class="section">
-      <h2>أنواع الثغرات الشائعة</h2>
+      <h2>أنواع الثغرات</h2>
       <ul>
-        <li><strong>SQL Injection</strong>: إدخال أوامر SQL في الحقول غير المؤمنة.</li>
-        <li><strong>XSS</strong>: إدخال أكواد JavaScript في صفحات الويب.</li>
-        <li><strong>CSRF</strong>: تنفيذ أوامر غير مصرح بها باسم الضحية.</li>
-        <li><strong>IDOR</strong>: الوصول إلى معلومات مستخدم آخر عن طريق تغيير ID بالرابط.</li>
+        <li><b>SQL Injection:</b> إدخال أوامر في قاعدة البيانات.</li>
+        <li><b>XSS:</b> تنفيذ كود JavaScript عبر متصفح الضحية.</li>
+        <li><b>CSRF:</b> تنفيذ عمليات نيابة عن المستخدم دون علمه.</li>
+        <li><b>IDOR:</b> الوصول إلى بيانات غير مصرح بها عن طريق تعديل المعرفات.</li>
       </ul>
     </section>
     <section id="ai" class="section">
-      <h2>مساعد الذكاء الاصطناعي</h2>
-      <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا...">
+      <h2>الذكاء الاصطناعي</h2>
+      <input type="text" id="aiInput" placeholder="ما هي ثغرة XSS؟">
       <button onclick="askAI()">أرسل</button>
       <div id="aiAnswer"></div>
     </section>
     <section id="contact" class="section">
       <h2>تواصل معنا</h2>
-      <p>راسلنا مباشرة عبر تيليجرام:</p>
+      <p>راسلنا على تيليجرام:</p>
       <a href="https://t.me/Haidar790" target="_blank">@Haidar790</a>
     </section>
     <footer>
