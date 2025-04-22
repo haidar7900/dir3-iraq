@@ -67,7 +67,7 @@
       color: #aaa;
     }
     input[type="text"] {
-      width: 80%;
+      width: 90%;
       padding: 10px;
       margin: 10px 0;
       border-radius: 6px;
@@ -90,6 +90,13 @@
       max-width: 700px;
       text-align: right;
     }
+    .telegram-link {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      color: #29b6f6;
+      text-decoration: underline;
+    }
   </style>
   <script>
     function showSection(id) {
@@ -98,23 +105,34 @@
       document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('active'));
       document.getElementById(id + '-btn').classList.add('active');
     }
-    function analyzeURL() {
+    async function analyzeURL() {
       const input = document.getElementById('scanInput').value;
       const result = document.getElementById('scanResult');
       if (!input) return result.innerText = 'يرجى إدخال رابط للفحص';
-      let score = 0;
-      if (!input.startsWith('https://')) score++;
-      if (input.includes('login') || input.includes('verify')) score++;
-      if (input.length > 80) score++;
-      if (input.match(/\d+\.\d+\.\d+\.\d+/)) score++;
-      result.innerText = `نتيجة الفحص: ${score >= 3 ? 'خطر' : score === 2 ? 'مريب' : 'آمن'} | تقييم الأمان: ${100 - score * 20}%`;
+      result.innerText = 'جاري التحليل...';
+      const analysis = `تفاصيل الرابط:
+- الطول: ${input.length} حرف
+- يبدأ بـ: ${input.startsWith('https') ? 'HTTPS' : 'HTTP'}
+- يحتوي على IP: ${/\d+\.\d+\.\d+\.\d+/.test(input) ? 'نعم' : 'لا'}
+- كلمات خطيرة: ${(input.match(/(login|verify|secure|account)/g) || []).length}`;
+      setTimeout(() => {
+        result.innerText = analysis;
+      }, 1500);
     }
     function askAI() {
-      const q = document.getElementById('aiInput').value;
+      const q = document.getElementById('aiInput').value.toLowerCase();
       const a = document.getElementById('aiResponse');
-      if (q.includes('xss')) a.innerText = 'XSS هي ثغرة تُمكن المهاجم من حقن سكريبت في صفحة ويب.';
-      else if (q.includes('sql')) a.innerText = 'SQLi هي ثغرة تُستغل لإرسال أوامر SQL إلى قاعدة البيانات.';
-      else a.innerText = 'جارٍ تحليل السؤال...';
+      if (q.includes('xss')) a.innerText = 'XSS هي ثغرة تُستخدم لحقن سكريبتات في صفحات الويب وغالباً تُستغل لسرقة الجلسات.';
+      else if (q.includes('sql')) a.innerText = 'SQL Injection تسمح للمهاجم بتنفيذ استعلامات مخصصة على قاعدة البيانات بسبب ضعف التحقق من المُدخلات.';
+      else if (q.includes('csrf')) a.innerText = 'CSRF هي ثغرة تعتمد على خداع المستخدم لإجراء عملية غير مرغوبة أثناء جلسة دخول فعالة.';
+      else if (q.includes('idor')) a.innerText = 'IDOR هي ثغرة تسمح بالوصول غير المصرح به إلى بيانات أو وظائف بسبب غياب تحقق الصلاحيات.';
+      else a.innerText = 'تم استلام السؤال، سيتم الرد بمعلومة موثوقة قريبًا...';
+    }
+    function generatePassword() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+      let pass = '';
+      for (let i = 0; i < 16; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      document.getElementById('generatedPass').innerText = 'كلمة مرور قوية: ' + pass;
     }
     window.onload = () => showSection('home');
   </script>
@@ -122,57 +140,74 @@
 <body>
   <aside>
     <img src="icon128.png" alt="درع العراق">
-    <button id="home-btn" onclick="showSection('home')">الصفحة الرئيسية</button>
-    <button id="scanner-btn" onclick="showSection('scanner')">فحص الروابط</button>
+    <button id="home-btn" onclick="showSection('home')">الرئيسية</button>
+    <button id="scanner-btn" onclick="showSection('scanner')">فحص الموقع</button>
     <button id="tools-btn" onclick="showSection('tools')">أدواتي</button>
-    <button id="reports-btn" onclick="showSection('reports')">تقارير الثغرات</button>
+    <button id="reports-btn" onclick="showSection('reports')">أنواع الثغرات</button>
     <button id="ai-btn" onclick="showSection('ai')">الذكاء الاصطناعي</button>
     <button id="privacy-btn" onclick="showSection('privacy')">الخصوصية</button>
   </aside>
   <main>
     <div id="home" class="section active">
-      <h2>أهلاً بك في درع العراق</h2>
-      <p>منصة حماية إلكترونية متقدمة لفحص الروابط وتحليل المخاطر عبر الذكاء الاصطناعي.</p>
+      <h2>مرحباً بك في منصة درع العراق</h2>
+      <p>أداة فحص وتحليل متكاملة للمواقع والروابط الخطرة، مدموجة بذكاء اصطناعي وتوثيق احترافي.</p>
     </div><div id="scanner" class="section">
-  <h2>فحص الروابط</h2>
-  <input type="text" id="scanInput" placeholder="أدخل رابط للفحص">
-  <button class="action" onclick="analyzeURL()">فحص</button>
-  <p id="scanResult"></p>
+  <h2>فحص موقع</h2>
+  <input type="text" id="scanInput" placeholder="أدخل رابط الموقع">
+  <button class="action" onclick="analyzeURL()">ابدأ الفحص</button>
+  <pre id="scanResult" class="box"></pre>
 </div>
 
 <div id="tools" class="section">
   <h2>أدواتي</h2>
-  <div class="box">• فحص IP Address<br>• تحليل DNS<br>• توليد كلمات مرور قوية<br>• كشف الموقع الجغرافي</div>
+  <div class="box">
+    <strong>توليد كلمة مرور</strong><br>
+    <button onclick="generatePassword()">توليد الآن</button>
+    <p id="generatedPass"></p>
+  </div>
+  <div class="box">
+    <strong>تحليل DNS وIP</strong><br>
+    <p>قريبًا سيتم ربط الأداة بخدمة خارجية لعرض تفاصيل كاملة.</p>
+  </div>
 </div>
 
 <div id="reports" class="section">
-  <h2>تقارير الثغرات</h2>
+  <h2>أنواع الثغرات في المواقع</h2>
   <div class="box">
-    <strong>XSS Reflected in login.php</strong><br>
-    الخطورة: متوسطة<br>
-    الوصف: إدخال سكريبت في الحقل دون فلترة.
+    <strong>SQL Injection</strong><br>
+    تُستغل لتنفيذ استعلامات ضارة على قاعدة البيانات عبر مُدخلات غير مفلترة.
   </div>
   <div class="box">
-    <strong>SQL Injection في id=</strong><br>
-    الخطورة: عالية<br>
-    الوصف: تنفيذ أوامر SQL من خلال متغير GET.
+    <strong>XSS</strong><br>
+    تسمح بحقن سكريبت داخل الصفحة لسرقة الجلسات أو تشويه المحتوى.
+  </div>
+  <div class="box">
+    <strong>IDOR</strong><br>
+    وصول غير مصرح به للبيانات عبر التلاعب بالمعرّفات.
+  </div>
+  <div class="box">
+    <strong>CSRF</strong><br>
+    تنفيذ أوامر غير مرئية باسم المستخدم دون علمه.
   </div>
 </div>
 
 <div id="ai" class="section">
-  <h2>الذكاء الاصطناعي</h2>
-  <input type="text" id="aiInput" placeholder="اكتب سؤالك...">
+  <h2>مساعد الذكاء الاصطناعي</h2>
+  <input type="text" id="aiInput" placeholder="اسأل عن أي نوع من الثغرات أو الفحص">
   <button class="action" onclick="askAI()">إرسال</button>
-  <div class="box"><p id="aiResponse">الرد سيظهر هنا</p></div>
+  <div class="box"><p id="aiResponse">الرد سيظهر هنا.</p></div>
 </div>
 
 <div id="privacy" class="section">
   <h2>سياسة الخصوصية</h2>
   <div class="box">
-    لا يتم تخزين أي معلومات أو روابط. جميع الفحوصات تتم محلياً على جهازك لضمان الحماية والخصوصية.
+    لا يتم حفظ أو إرسال أي بيانات. جميع الفحوصات تتم محليًا على جهاز المستخدم.
   </div>
 </div>
-<div class="footer">&copy; 2025 - من تصميم المهندس حيدر الجنابي - درع العراق</div>
+
+<a class="telegram-link" href="https://t.me/Haidar790" target="_blank">تواصل معنا على تيليجرام</a>
+
+<div class="footer">&copy; 2025 - تصميم: المهندس حيدر الجنابي - درع العراق</div>
 
   </main>
 </body>
