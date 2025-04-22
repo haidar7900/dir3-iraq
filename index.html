@@ -6,192 +6,98 @@
   <style>
     body {
       margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #0d0d0d;
       color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      transition: background-color 0.4s, color 0.4s;
     }
     header {
       background-color: #1a1a1a;
       padding: 20px;
+      text-align: center;
       box-shadow: 0 2px 10px rgba(255, 0, 0, 0.2);
     }
-    header h1 {
-      margin: 0;
-      color: #ff4444;
-      font-size: 32px;
+    nav {
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    .container {
-      padding: 40px 20px;
+    nav button {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    nav button:hover {
+      background-color: #ff4444;
+    }
+    .section {
+      display: none;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .active {
+      display: block;
     }
     .shield {
-      width: 128px;
-      margin-bottom: 20px;
-      transition: transform 0.5s ease;
-    }
-    .shield.active {
-      animation: pulse 1s infinite;
+      width: 100px;
+      animation: pulse 2s infinite;
     }
     @keyframes pulse {
-      0% { transform: scale(1); }
+      0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
     }
-    p, .result, .technical, .counter, .footer, .signature {
-      font-size: 18px;
-      max-width: 700px;
-      margin: auto;
-      padding: 5px;
-    }
-    .input-box {
-      margin-top: 30px;
-    }
-    input[type="text"] {
-      padding: 12px;
-      width: 80%;
-      max-width: 450px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-    .button, .toggle-mode, .report-button {
-      display: inline-block;
-      padding: 12px 24px;
-      margin: 10px;
-      background-color: #ff4444;
-      color: white;
-      font-size: 16px;
-      border-radius: 8px;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-    }
-    .button:hover, .toggle-mode:hover, .report-button:hover {
-      background-color: #cc0000;
-    }
-    .loading-bar {
-      width: 60%;
-      margin: 20px auto;
-      height: 8px;
-      background-color: #333;
-      border-radius: 4px;
-      overflow: hidden;
-      display: none;
-    }
-    .loading-bar span {
-      display: block;
-      height: 100%;
-      width: 0;
-      background-color: #ff4444;
-      animation: load 1.5s linear forwards;
-    }
-    @keyframes load {
-      0% { width: 0; }
-      100% { width: 100%; }
-    }
-    .telegram a {
-      color: #29b6f6;
-      text-decoration: underline;
-    }
-    .dark-mode {
-      background-color: #f9f9f9;
-      color: #222;
-    }
-    .dark-mode header {
-      background-color: #eeeeee;
-      color: #111;
-    }
-    .dark-mode .button, .dark-mode .toggle-mode, .dark-mode .report-button {
-      background-color: #222;
-      color: #fff;
+    .footer {
+      margin-top: 50px;
+      font-size: 14px;
+      text-align: center;
+      color: #aaa;
     }
   </style>
   <script>
-    function analyzeURL() {
-      const url = document.getElementById('targetUrl').value.trim();
-      const resultDiv = document.getElementById('scanResult');
-      const technicalDiv = document.getElementById('technicalInfo');
-      const shield = document.querySelector('.shield');
-      const bar = document.querySelector('.loading-bar');
-      const barFill = document.querySelector('.loading-bar span');
-      resultDiv.innerText = '';
-      technicalDiv.innerHTML = '';
-      shield.classList.remove('active');
-      bar.style.display = 'block';
-      barFill.style.width = '0';barFill.style.animation = 'load 1.5s linear forwards';
-
-  setTimeout(() => {
-    let score = 0;
-    const redFlags = ["login", "verify", "update", "secure", "account", "free", "offer", "bank", "paypal", "dropbox", "drive", "password", "credential"];
-    redFlags.forEach(word => {
-      if (url.toLowerCase().includes(word)) score++;
-    });
-
-    const isIP = /\d+\.\d+\.\d+\.\d+/.test(url);
-    const isHTTPS = url.startsWith("https://");
-    const length = url.length;
-
-    let riskLevel = 'آمن';
-    let color = '#4caf50';
-    if (score >= 4 || isIP || !isHTTPS || length > 100) {
-      riskLevel = 'خطير';
-      color = '#f44336';
-    } else if (score >= 2) {
-      riskLevel = 'مريب';
-      color = '#ffc107';
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
-
-    resultDiv.innerHTML = `نتيجة الفحص: <strong style="color: ${color}">${riskLevel}</strong><br>تقييم الأمان: ${100 - (score * 20)}%`;
-    technicalDiv.innerHTML = `تفاصيل: <br>طول الرابط: ${length} حرف<br>نوع البروتوكول: ${isHTTPS ? 'HTTPS (مُشفر)' : 'HTTP (غير آمن)'}<br>يحتوي IP: ${isIP ? 'نعم' : 'لا'}<br>عدد كلمات خطرة: ${score}`;
-    shield.classList.add('active');
-    bar.style.display = 'none';
-  }, 1600);
-}
-
-function toggleMode() {
-  document.body.classList.toggle("dark-mode");
-}
-
-function reportURL() {
-  const url = document.getElementById('targetUrl').value.trim();
-  if (!url) return alert("يرجى إدخال الرابط المشبوه أولاً.");
-  window.open(`https://t.me/Haidar790?text=أبلغ عن رابط مشبوه: ${url}`, '_blank');
-}
-
+    window.onload = () => {
+      showSection('home');
+    }
   </script>
 </head>
 <body>
   <header>
     <h1>درع العراق</h1>
-  </header>  <div class="container">
-    <img src="icon128.png" alt="شعار درع العراق" class="shield">
-    <p>منصة إلكترونية لفحص وتحليل الروابط، وكشف التهديدات المحتملة لحمايتك من التصيّد والمواقع الخبيثة.</p><div class="input-box">
-  <input type="text" id="targetUrl" placeholder="أدخل رابط الموقع هنا...">
-  <br>
-  <button class="button" onclick="analyzeURL()">فحص الرابط</button>
-  <button class="report-button" onclick="reportURL()">إبلاغ عن رابط</button>
-  <button class="toggle-mode">تبديل الوضع</button>
-  <div class="loading-bar"><span></span></div>
-  <div class="result" id="scanResult"></div>
-  <div class="technical" id="technicalInfo"></div>
-</div>
-
-<div class="counter">عدد عمليات الفحص (تقديري): 2,548+</div>
-
-<div class="telegram">
-  راسلنا عبر تيليجرام: <a href="https://t.me/Haidar790" target="_blank">@Haidar790</a>
-</div>
-
-<div class="signature">
-  <strong>من تصميم المهندس حيدر الجنابي</strong>
-</div>
-
-<div class="footer">
-  &copy; 2025 درع العراق - جميع الحقوق محفوظة.
-</div>
-
+  </header>
+  <nav>
+    <button onclick="showSection('home')">الصفحة الرئيسية</button>
+    <button onclick="showSection('scanner')">فحص الروابط</button>
+    <button onclick="showSection('tools')">أدواتي</button>
+    <button onclick="showSection('reports')">تقارير الثغرات</button>
+    <button onclick="showSection('ai')">الذكاء الاصطناعي</button>
+    <button onclick="showSection('privacy')">الخصوصية</button>
+  </nav>  <div id="home" class="section">
+    <img src="icon128.png" class="shield" alt="شعار درع العراق">
+    <h2>مرحباً بك في منصة درع العراق</h2>
+    <p>منصة إلكترونية لحماية المستخدمين العراقيين من الروابط الخبيثة والمواقع المريبة باستخدام أدوات متقدمة وذكاء اصطناعي.</p>
+  </div>  <div id="scanner" class="section">
+    <h2>فحص الروابط</h2>
+    <p>ميزة فحص الروابط سيتم دمج الذكاء الاصطناعي والتحليل الكامل لها في هذا القسم.</p>
+  </div>  <div id="tools" class="section">
+    <h2>أدواتي</h2>
+    <p>هنا سيتم عرض أدوات مثل: فحص IP، تحليل DNS، توليد كلمات مرور قوية، والمزيد.</p>
+  </div>  <div id="reports" class="section">
+    <h2>تقارير الثغرات</h2>
+    <p>قسم خاص بنشر تقاريرك وملاحظاتك الأمنية حول الثغرات التي تم اكتشافها.</p>
+  </div>  <div id="ai" class="section">
+    <h2>مساعد الذكاء الاصطناعي</h2>
+    <p>يمكنك الدردشة مع مساعد الذكاء الصناعي لطرح الأسئلة حول الروابط أو المصطلحات الأمنية.</p>
+  </div>  <div id="privacy" class="section">
+    <h2>سياسة الخصوصية</h2>
+    <p>نحن لا نقوم بجمع أو تخزين أي روابط أو بيانات مستخدم. يتم الفحص محليًا بالكامل لحماية خصوصيتك.</p>
+  </div>  <div class="footer">
+    من تصميم المهندس حيدر الجنابي &copy; 2025 - درع العراق
   </div>
 </body>
 </html>
