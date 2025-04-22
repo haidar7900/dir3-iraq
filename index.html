@@ -59,6 +59,11 @@
     .button:hover {
       background-color: #cc0000;
     }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #29b6f6;
+    }
     .footer {
       margin-top: 40px;
       font-size: 14px;
@@ -72,9 +77,11 @@
     .telegram {
       display: inline-block;
       margin-top: 10px;
-      color: #29b6f6;
       font-size: 16px;
       text-decoration: underline;
+    }
+    .telegram a {
+      color: #29b6f6;
     }
     .signature {
       margin-top: 30px;
@@ -83,15 +90,26 @@
     }
   </style>
   <script>
-    function openURL() {
+    function analyzeURL() {
       const url = document.getElementById('targetUrl').value.trim();
-      if (!url) return alert("يرجى إدخال رابط صحيح.");
-      if (!url.startsWith("http")) {
-        alert("يجب أن يبدأ الرابط بـ http أو https");
-        return;
-      }
-      window.open(url, '_blank');
-    }
+      const resultDiv = document.getElementById('scanResult');
+      if (!url) return resultDiv.innerText = "يرجى إدخال رابط للفحص.";const redFlags = ["login", "verify", "update", "secure", "account", "free", "offer", "bank", "paypal", "dropbox", "drive", "password", "credential"];
+  let score = 0;
+  redFlags.forEach(word => {
+    if (url.toLowerCase().includes(word)) score++;
+  });
+
+  if (!url.startsWith("http")) {
+    resultDiv.innerText = "الرابط غير صالح. تأكد من أن يبدأ بـ https:// أو http://";
+  } else if (score >= 3) {
+    resultDiv.innerText = "تحذير: الرابط يحتوي على مؤشرات مشبوهة وقد يكون خطيرًا.";
+  } else if (score === 1 || score === 2) {
+    resultDiv.innerText = "تنبيه: الرابط يحتوي على بعض المؤشرات المريبة. الرجاء الحذر.";
+  } else {
+    resultDiv.innerText = "الرابط يبدو آمنًا مبدئيًا (فحص سطحي فقط).";
+  }
+}
+
   </script>
 </head>
 <body>
@@ -104,13 +122,14 @@
     </p><div class="input-box">
   <input type="text" id="targetUrl" placeholder="أدخل رابط الموقع هنا...">
   <br>
-  <button class="button" onclick="openURL()">فحص وفتح الرابط</button>
+  <button class="button" onclick="analyzeURL()">فحص الرابط</button>
+  <div class="result" id="scanResult"></div>
 </div>
 
 <div class="counter">عدد مرات الفحص (تقديري): 2,548+</div>
 
 <div class="telegram">
-  راسلنا عبر تيليجرام: <a href="https://t.me/haidar7900" target="_blank" style="color: #29b6f6; text-decoration: underline;">@haidar7900</a>
+  راسلنا عبر تيليجرام: <a href="https://t.me/Haidar790" target="_blank">@Haidar790</a>
 </div>
 
 <div class="signature">
