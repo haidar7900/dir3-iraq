@@ -33,16 +33,28 @@
       max-width: 600px;
       margin: auto;
     }
+    .input-box {
+      margin-top: 30px;
+    }
+    input[type="text"] {
+      padding: 12px;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
     .button {
       display: inline-block;
-      margin-top: 30px;
       padding: 12px 26px;
       background-color: #ff4444;
       color: white;
       font-size: 16px;
       border-radius: 8px;
       text-decoration: none;
-      transition: background 0.3s;
+      cursor: pointer;
+      border: none;
     }
     .button:hover {
       background-color: #cc0000;
@@ -70,6 +82,17 @@
       color: #666;
     }
   </style>
+  <script>
+    function openURL() {
+      const url = document.getElementById('targetUrl').value.trim();
+      if (!url) return alert("يرجى إدخال رابط صحيح.");
+      if (!url.startsWith("http")) {
+        alert("يجب أن يبدأ الرابط بـ http أو https");
+        return;
+      }
+      window.open(url, '_blank');
+    }
+  </script>
 </head>
 <body>
   <header>
@@ -78,9 +101,13 @@
     <img src="icon128.png" alt="شعار درع العراق" class="shield">
     <p>
       منصة إلكترونية لحماية المستخدمين من المواقع المشبوهة والخبيثة، مبنية بالكامل من قبل مهندسي الأمن السيبراني في العراق.
-    </p><a class="button" href="https://github.com/haidar7900/dir3-iraq/archive/refs/heads/main.zip">تحميل الحماية</a>
+    </p><div class="input-box">
+  <input type="text" id="targetUrl" placeholder="أدخل رابط الموقع هنا...">
+  <br>
+  <button class="button" onclick="openURL()">فحص وفتح الرابط</button>
+</div>
 
-<div class="counter">عدد مرات التحميل (تقديري): 2,548+</div>
+<div class="counter">عدد مرات الفحص (تقديري): 2,548+</div>
 
 <div class="telegram">
   راسلنا عبر تيليجرام: @haidar7900
