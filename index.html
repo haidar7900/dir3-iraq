@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar">
+<!DOCTYPE html><html lang="ar">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,54 +19,58 @@
   <main>
     <section id="home" class="section active">
       <h1>درع العراق</h1>
+      <img src="https://undraw.co/api/illustrations/security.svg" alt="درع حماية" style="max-width: 300px; margin: 20px 0;">
       <p>منصة إلكترونية شاملة لفحص المواقع، تحليل الروابط، واكتشاف الثغرات بإشراف الذكاء الاصطناعي.</p>
-    </section>
+    </section><section id="scan" class="section">
+  <h2>فحص رابط</h2>
+  <img src="https://undraw.co/api/illustrations/online_security.svg" alt="فحص رابط" style="max-width: 250px;">
+  <input type="url" id="scanUrl" placeholder="أدخل الرابط هنا...">
+  <button onclick="analyzeUrl()">فحص</button>
+  <div id="scanResult"></div>
+</section>
 
-    <section id="scan" class="section">
-      <h2>فحص رابط</h2>
-      <input type="url" id="scanUrl" placeholder="أدخل الرابط هنا...">
-      <button onclick="analyzeUrl()">فحص</button>
-      <div id="scanResult"></div>
-    </section>
+<section id="tools" class="section">
+  <h2>أدواتي</h2>
+  <img src="https://undraw.co/api/illustrations/settings.svg" alt="أدوات تقنية" style="max-width: 250px;">
+  <div>
+    <button onclick="checkIP()">فحص IP</button>
+    <div id="ipInfo"></div>
+  </div>
+  <div>
+    <button onclick="generatePassword()">توليد كلمة مرور</button>
+    <div id="passwordResult"></div>
+  </div>
+</section>
 
-    <section id="tools" class="section">
-      <h2>أدواتي</h2>
-      <div>
-        <button onclick="checkIP()">فحص IP</button>
-        <div id="ipInfo"></div>
-      </div>
-      <div>
-        <button onclick="generatePassword()">توليد كلمة مرور</button>
-        <div id="passwordResult"></div>
-      </div>
-    </section>
+<section id="vulns" class="section">
+  <h2>أنواع الثغرات الشائعة</h2>
+  <img src="https://undraw.co/api/illustrations/hacker_mindset.svg" alt="ثغرات" style="max-width: 250px;">
+  <ul>
+    <li><strong>SQL Injection</strong>: إدخال أوامر SQL في الحقول غير المؤمنة.</li>
+    <li><strong>XSS</strong>: إدخال أكواد JavaScript في صفحات الويب.</li>
+    <li><strong>CSRF</strong>: تنفيذ أوامر غير مصرح بها باسم الضحية.</li>
+    <li><strong>IDOR</strong>: الوصول إلى معلومات مستخدم آخر عن طريق تغيير ID بالرابط.</li>
+  </ul>
+</section>
 
-    <section id="vulns" class="section">
-      <h2>أنواع الثغرات الشائعة</h2>
-      <ul>
-        <li><strong>SQL Injection</strong>: إدخال أوامر SQL في الحقول غير المؤمنة.</li>
-        <li><strong>XSS</strong>: إدخال أكواد JavaScript في صفحات الويب.</li>
-        <li><strong>CSRF</strong>: تنفيذ أوامر غير مصرح بها باسم الضحية.</li>
-        <li><strong>IDOR</strong>: الوصول إلى معلومات مستخدم آخر عن طريق تغيير ID بالرابط.</li>
-      </ul>
-    </section>
+<section id="ai" class="section">
+  <h2>مساعد الذكاء الاصطناعي</h2>
+  <img src="https://undraw.co/api/illustrations/artificial_intelligence.svg" alt="ذكاء صناعي" style="max-width: 250px;">
+  <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا...">
+  <button onclick="askAI()">أرسل</button>
+  <div id="aiAnswer"></div>
+</section>
 
-    <section id="ai" class="section">
-      <h2>مساعد الذكاء الاصطناعي</h2>
-      <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا...">
-      <button onclick="askAI()">أرسل</button>
-      <div id="aiAnswer"></div>
-    </section>
+<section id="contact" class="section">
+  <h2>تواصل معنا</h2>
+  <p>راسلنا مباشرة عبر تيليجرام:</p>
+  <a href="https://t.me/Haidar790" target="_blank">@Haidar790</a>
+</section>
 
-    <section id="contact" class="section">
-      <h2>تواصل معنا</h2>
-      <p>راسلنا مباشرة عبر تيليجرام:</p>
-      <a href="https://t.me/Haidar790" target="_blank">@Haidar790</a>
-    </section>
+<footer>
+  <p>© 2025 درع العراق - تصميم المهندس حيدر الجنابي</p>
+</footer>
 
-    <footer>
-      <p>© 2025 درع العراق - تصميم المهندس حيدر الجنابي</p>
-    </footer>
   </main>
 </body>
 </html>
