@@ -4,12 +4,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>درع العراق - منصة الحماية الإلكترونية</title>
   <link rel="stylesheet" href="style.css" />
-  <script defer src="main.js"></script>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      background-image: radial-gradient(#222 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: cyberGrid 15s linear infinite;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      display: flex;
+    }
+    @keyframes cyberGrid {
+      from { background-position: 0 0; }
+      to { background-position: 100px 100px; }
+    }
+    .sidebar button {
+      transition: all 0.3s ease;
+    }
+    .sidebar button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #ff4444;
+    }
+    .section {
+      display: none;
+      padding: 30px;
+      animation: fadeIn 0.7s ease;
+    }
+    .section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .loader {
+      border: 4px solid #333;
+      border-top: 4px solid #ff4444;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <script defer>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('active'));
+    }
+    function analyzeUrl() {
+      const input = document.getElementById('scanUrl').value;
+      const result = document.getElementById('scanResult');
+      const loader = document.getElementById('loader');
+      if (!input) return result.innerText = 'يرجى إدخال رابط للفحص';
+      loader.style.display = 'block';
+      result.innerText = '';
+      setTimeout(() => {
+        loader.style.display = 'none';
+        result.innerText = `تم تحليل الرابط: ${input}\n- HTTPS: ${input.startsWith('https') ? 'نعم' : 'لا'}`;
+      }, 2000);
+    }
+    function generatePassword() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+      let pass = '';
+      for (let i = 0; i < 16; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      document.getElementById('passwordResult').innerText = 'كلمة مرور قوية: ' + pass;
+    }
+    function askAI() {
+      const q = document.getElementById('aiInput').value.toLowerCase();
+      const a = document.getElementById('aiAnswer');
+      if (q.includes('xss')) a.innerText = 'XSS: ثغرة تسمح بحقن سكريبتات داخل الموقع.';
+      else if (q.includes('sql')) a.innerText = 'SQLi: تسمح للمهاجم بتنفيذ أوامر SQL عبر المدخلات.';
+      else a.innerText = 'يرجى توضيح السؤال أكثر.';
+    }
+    window.onload = () => showSection('home');
+  </script>
 </head>
 <body>
   <aside class="sidebar">
     <img src="icon128.png" alt="شعار درع العراق" class="logo" />
-    <button onclick="showSection('home')" class="active">الرئيسية</button>
+    <button onclick="showSection('home')">الرئيسية</button>
     <button onclick="showSection('scan')">فحص الموقع</button>
     <button onclick="showSection('tools')">أدواتي</button>
     <button onclick="showSection('vulns')">الثغرات</button>
@@ -19,58 +100,43 @@
   <main>
     <section id="home" class="section active">
       <h1>درع العراق</h1>
-      <img src="https://undraw.co/api/illustrations/security.svg" alt="درع حماية" style="max-width: 300px; margin: 20px 0;">
       <p>منصة إلكترونية شاملة لفحص المواقع، تحليل الروابط، واكتشاف الثغرات بإشراف الذكاء الاصطناعي.</p>
-    </section><section id="scan" class="section">
-  <h2>فحص رابط</h2>
-  <img src="https://undraw.co/api/illustrations/online_security.svg" alt="فحص رابط" style="max-width: 250px;">
-  <input type="url" id="scanUrl" placeholder="أدخل الرابط هنا...">
-  <button onclick="analyzeUrl()">فحص</button>
-  <div id="scanResult"></div>
-</section>
-
-<section id="tools" class="section">
-  <h2>أدواتي</h2>
-  <img src="https://undraw.co/api/illustrations/settings.svg" alt="أدوات تقنية" style="max-width: 250px;">
-  <div>
-    <button onclick="checkIP()">فحص IP</button>
-    <div id="ipInfo"></div>
-  </div>
-  <div>
-    <button onclick="generatePassword()">توليد كلمة مرور</button>
-    <div id="passwordResult"></div>
-  </div>
-</section>
-
-<section id="vulns" class="section">
-  <h2>أنواع الثغرات الشائعة</h2>
-  <img src="https://undraw.co/api/illustrations/hacker_mindset.svg" alt="ثغرات" style="max-width: 250px;">
-  <ul>
-    <li><strong>SQL Injection</strong>: إدخال أوامر SQL في الحقول غير المؤمنة.</li>
-    <li><strong>XSS</strong>: إدخال أكواد JavaScript في صفحات الويب.</li>
-    <li><strong>CSRF</strong>: تنفيذ أوامر غير مصرح بها باسم الضحية.</li>
-    <li><strong>IDOR</strong>: الوصول إلى معلومات مستخدم آخر عن طريق تغيير ID بالرابط.</li>
-  </ul>
-</section>
-
-<section id="ai" class="section">
-  <h2>مساعد الذكاء الاصطناعي</h2>
-  <img src="https://undraw.co/api/illustrations/artificial_intelligence.svg" alt="ذكاء صناعي" style="max-width: 250px;">
-  <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا...">
-  <button onclick="askAI()">أرسل</button>
-  <div id="aiAnswer"></div>
-</section>
-
-<section id="contact" class="section">
-  <h2>تواصل معنا</h2>
-  <p>راسلنا مباشرة عبر تيليجرام:</p>
-  <a href="https://t.me/Haidar790" target="_blank">@Haidar790</a>
-</section>
-
-<footer>
-  <p>© 2025 درع العراق - تصميم المهندس حيدر الجنابي</p>
-</footer>
-
+    </section>
+    <section id="scan" class="section">
+      <h2>فحص رابط</h2>
+      <input type="url" id="scanUrl" placeholder="أدخل الرابط هنا...">
+      <button onclick="analyzeUrl()">فحص</button>
+      <div id="loader" class="loader"></div>
+      <div id="scanResult"></div>
+    </section>
+    <section id="tools" class="section">
+      <h2>أدواتي</h2>
+      <button onclick="generatePassword()">توليد كلمة مرور</button>
+      <div id="passwordResult"></div>
+    </section>
+    <section id="vulns" class="section">
+      <h2>أنواع الثغرات الشائعة</h2>
+      <ul>
+        <li><strong>SQL Injection</strong>: إدخال أوامر SQL في الحقول غير المؤمنة.</li>
+        <li><strong>XSS</strong>: إدخال أكواد JavaScript في صفحات الويب.</li>
+        <li><strong>CSRF</strong>: تنفيذ أوامر غير مصرح بها باسم الضحية.</li>
+        <li><strong>IDOR</strong>: الوصول إلى معلومات مستخدم آخر عن طريق تغيير ID بالرابط.</li>
+      </ul>
+    </section>
+    <section id="ai" class="section">
+      <h2>مساعد الذكاء الاصطناعي</h2>
+      <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا...">
+      <button onclick="askAI()">أرسل</button>
+      <div id="aiAnswer"></div>
+    </section>
+    <section id="contact" class="section">
+      <h2>تواصل معنا</h2>
+      <p>راسلنا مباشرة عبر تيليجرام:</p>
+      <a href="https://t.me/Haidar790" target="_blank">@Haidar790</a>
+    </section>
+    <footer>
+      <p>© 2025 درع العراق - تصميم المهندس حيدر الجنابي</p>
+    </footer>
   </main>
 </body>
 </html>
