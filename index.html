@@ -2,44 +2,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>درع العراق - منصة الحماية الإلكترونية</title>
+  <title>درع العراق</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #0d0d0d;
       color: #fff;
-    }
-    header {
-      background-color: #1a1a1a;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(255, 0, 0, 0.2);
-    }
-    nav {
-      background-color: #111;
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
     }
-    nav button {
-      padding: 10px 20px;
+    aside {
+      width: 220px;
+      background-color: #111;
+      height: 100vh;
+      padding-top: 20px;
+      box-shadow: 2px 0 10px rgba(255, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    aside img {
+      width: 100px;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    aside button {
       background: none;
       border: none;
-      color: #fff;
+      color: white;
+      padding: 12px 20px;
+      width: 100%;
+      text-align: right;
       font-size: 16px;
       cursor: pointer;
+      transition: background 0.3s;
     }
-    nav button:hover {
+    aside button:hover, aside button.active {
       background-color: #ff4444;
+    }
+    main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
     }
     .section {
       display: none;
-      padding: 30px 20px;
-      text-align: center;
+      animation: fade 0.3s ease-in-out;
     }
-    .active {
+    .section.active {
       display: block;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .footer {
       margin-top: 50px;
@@ -47,40 +66,37 @@
       text-align: center;
       color: #aaa;
     }
-    .tools-list, .report-item, .chat-box, .privacy-text {
-      background: #1c1c1c;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 10px auto;
-      max-width: 600px;
-      text-align: right;
-    }
-    .chat-box p {
-      text-align: right;
-    }
     input[type="text"] {
-      width: 90%;
+      width: 80%;
       padding: 10px;
-      border-radius: 6px;
       margin: 10px 0;
+      border-radius: 6px;
       border: none;
     }
-    button {
+    button.action {
       padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
       background-color: #ff4444;
       color: white;
+      border: none;
+      border-radius: 6px;
+      margin: 10px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #cc0000;
+    .box {
+      background-color: #1c1c1c;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 10px auto;
+      max-width: 700px;
+      text-align: right;
     }
   </style>
   <script>
     function showSection(id) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(id + '-btn').classList.add('active');
     }
     function analyzeURL() {
       const input = document.getElementById('scanInput').value;
@@ -100,64 +116,64 @@
       else if (q.includes('sql')) a.innerText = 'SQLi هي ثغرة تُستغل لإرسال أوامر SQL إلى قاعدة البيانات.';
       else a.innerText = 'جارٍ تحليل السؤال...';
     }
-    window.onload = () => {
-      showSection('home');
-    }
+    window.onload = () => showSection('home');
   </script>
 </head>
 <body>
-  <header>
-    <h1>درع العراق</h1>
-  </header>
-  <nav>
-    <button onclick="showSection('home')">الرئيسية</button>
-    <button onclick="showSection('scanner')">فحص الروابط</button>
-    <button onclick="showSection('tools')">أدواتي</button>
-    <button onclick="showSection('reports')">تقارير الثغرات</button>
-    <button onclick="showSection('ai')">الذكاء الاصطناعي</button>
-    <button onclick="showSection('privacy')">الخصوصية</button>
-  </nav>  <div id="home" class="section active">
-    <h2>مرحباً بك في منصة درع العراق</h2>
-    <p>تحليل شامل للروابط، أدوات سيبرانية، تقارير ثغرات، ومساعد ذكاء صناعي.</p>
-  </div>  <div id="scanner" class="section">
-    <h2>فحص الروابط</h2>
-    <input type="text" id="scanInput" placeholder="أدخل رابط للفحص">
-    <button onclick="analyzeURL()">فحص</button>
-    <p id="scanResult"></p>
-  </div>  <div id="tools" class="section">
-    <h2>أدواتي</h2>
-    <div class="tools-list">
-      <p>• فحص IP Address</p>
-      <p>• تحليل DNS</p>
-      <p>• توليد كلمات مرور قوية</p>
-      <p>• كشف الموقع الجغرافي IP</p>
-    </div>
-  </div>  <div id="reports" class="section">
-    <h2>تقارير الثغرات</h2>
-    <div class="report-item">
-      <strong>XSS Reflected in login.php</strong><br>
-      الخطورة: متوسطة<br>
-      الوصف: الثغرة تسمح بحقن سكريبت داخل الحقل دون فلترة.<br>
-    </div>
-    <div class="report-item">
-      <strong>SQL Injection في id=</strong><br>
-      الخطورة: عالية<br>
-      الوصف: قابلية تنفيذ أوامر SQL من خلال متغير GET بدون تحقق.
-    </div>
-  </div>  <div id="ai" class="section">
-    <h2>الذكاء الاصطناعي</h2>
-    <input type="text" id="aiInput" placeholder="اكتب سؤالك...">
-    <button onclick="askAI()">إرسال</button>
-    <div class="chat-box">
-      <p id="aiResponse">الرد سيظهر هنا</p>
-    </div>
-  </div>  <div id="privacy" class="section">
-    <h2>سياسة الخصوصية</h2>
-    <div class="privacy-text">
-      لا يتم حفظ أو تسجيل أي بيانات من المستخدم. جميع عمليات الفحص تتم محلياً داخل المتصفح.
-    </div>
-  </div>  <div class="footer">
-    من تصميم المهندس حيدر الجنابي &copy; 2025 - درع العراق
+  <aside>
+    <img src="icon128.png" alt="درع العراق">
+    <button id="home-btn" onclick="showSection('home')">الصفحة الرئيسية</button>
+    <button id="scanner-btn" onclick="showSection('scanner')">فحص الروابط</button>
+    <button id="tools-btn" onclick="showSection('tools')">أدواتي</button>
+    <button id="reports-btn" onclick="showSection('reports')">تقارير الثغرات</button>
+    <button id="ai-btn" onclick="showSection('ai')">الذكاء الاصطناعي</button>
+    <button id="privacy-btn" onclick="showSection('privacy')">الخصوصية</button>
+  </aside>
+  <main>
+    <div id="home" class="section active">
+      <h2>أهلاً بك في درع العراق</h2>
+      <p>منصة حماية إلكترونية متقدمة لفحص الروابط وتحليل المخاطر عبر الذكاء الاصطناعي.</p>
+    </div><div id="scanner" class="section">
+  <h2>فحص الروابط</h2>
+  <input type="text" id="scanInput" placeholder="أدخل رابط للفحص">
+  <button class="action" onclick="analyzeURL()">فحص</button>
+  <p id="scanResult"></p>
+</div>
+
+<div id="tools" class="section">
+  <h2>أدواتي</h2>
+  <div class="box">• فحص IP Address<br>• تحليل DNS<br>• توليد كلمات مرور قوية<br>• كشف الموقع الجغرافي</div>
+</div>
+
+<div id="reports" class="section">
+  <h2>تقارير الثغرات</h2>
+  <div class="box">
+    <strong>XSS Reflected in login.php</strong><br>
+    الخطورة: متوسطة<br>
+    الوصف: إدخال سكريبت في الحقل دون فلترة.
   </div>
+  <div class="box">
+    <strong>SQL Injection في id=</strong><br>
+    الخطورة: عالية<br>
+    الوصف: تنفيذ أوامر SQL من خلال متغير GET.
+  </div>
+</div>
+
+<div id="ai" class="section">
+  <h2>الذكاء الاصطناعي</h2>
+  <input type="text" id="aiInput" placeholder="اكتب سؤالك...">
+  <button class="action" onclick="askAI()">إرسال</button>
+  <div class="box"><p id="aiResponse">الرد سيظهر هنا</p></div>
+</div>
+
+<div id="privacy" class="section">
+  <h2>سياسة الخصوصية</h2>
+  <div class="box">
+    لا يتم تخزين أي معلومات أو روابط. جميع الفحوصات تتم محلياً على جهازك لضمان الحماية والخصوصية.
+  </div>
+</div>
+<div class="footer">&copy; 2025 - من تصميم المهندس حيدر الجنابي - درع العراق</div>
+
+  </main>
 </body>
 </html>
